@@ -25,6 +25,7 @@ namespace Paranoid.Models
         public DbSet<Movie> Movie { get; set; }
 
         public DbSet<MemberShipType> MemberShipTypes { get; set; }
+        public DbSet<Genre> Genres { get; set; }
 
 
         public ApplicationDbContext()

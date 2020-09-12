@@ -5,7 +5,7 @@
     }
 
     <h2>Index</h2>
-
+    @Html.ActionLink( "Create New", "New", "Customers")
     @if (!Model.Any())
     {
         <p>We don't have any customers yet.</p>
@@ -23,7 +23,7 @@
                 @foreach (var customer in Model)
                 {
                     <tr>
-                        <td>@Html.ActionLink(customer.Name, "Details", "Customers", new { id = customer.Id }, null)</td>
+                        <td>@Html.ActionLink(customer.Name, "Edit", "Customers", new { id = customer.Id }, null)</td>
                         <td>@customer.MemberShipType.Name</td>
                     </tr>
                 }

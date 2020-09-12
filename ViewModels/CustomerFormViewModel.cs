@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Paranoid.ViewModels
 {
-    public class NewCustomerViewModel
+    public class CustomerFormViewModel
     {
         public IEnumerable<MemberShipType> MemberShipTypes { get; set; }
 
