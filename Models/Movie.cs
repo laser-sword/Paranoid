@@ -16,6 +16,8 @@ namespace Paranoid.Models
 
         public byte GenreId { get; set; }
 
+        public int Stock { get; set; }
+
         
     }
 }

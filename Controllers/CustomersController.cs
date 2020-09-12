@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
+using Paranoid.ViewModels;
 
 namespace Paranoid.Controllers
 {
@@ -23,6 +24,24 @@ namespace Paranoid.Controllers
             _context.Dispose();
         }
 
+        public ActionResult New() {
+
+            var membershipTypes = _context.MemberShipTypes.ToList();
+            
+            var viewModel = new NewCustomerViewModel
+            {
+                MemberShipTypes = membershipTypes
+            };
+            return View(viewModel);
+        }
+        [HttpPost]
+        public ActionResult Create(Customer customer) {
+
+            _context.Customers.Add(customer);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Customers");
+        }
 
         // GET: Customers
         public ActionResult Index()

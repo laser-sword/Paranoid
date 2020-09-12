@@ -6,24 +6,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 
 namespace Paranoid.Controllers
 {
     public class MoviesController : Controller
     {
-        public ViewResult Index()
+        private ApplicationDbContext _context;
+
+        public MoviesController() {
+
+            _context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
         {
-            var movies = GetMovies();
+            _context.Dispose();
+        }
+        public ActionResult Index()
+        {
+            var movies = _context.Movie.Include(x => x.Genre).ToList();
             return View(movies);
         }
-        private IEnumerable<Movie> GetMovies()
-        {
-            return new List<Movie>
-            {
-                new Movie  { Id = 1, Name = "Shithouse!"},
-                new Movie  { Id = 2, Name = "Tits!"}
-            };
+
+
+        public ActionResult Details(int id) {
+
+            var movies = _context.Movie.Include(x => x.Genre).SingleOrDefault(x => x.Id == id);
+
+            if (movies == null)
+                return HttpNotFound();
+               
+
+            return View(movies);
         }
+        //private IEnumerable<Movie> GetMovies()
+        //{
+        //    return new List<Movie>
+        //    {
+        //        new Movie  { Id = 1, Name = "Shithouse!"},
+        //        new Movie  { Id = 2, Name = "Tits!"}
+        //    };
+        //}
 
         // GET: Movies
         public ActionResult Random()
