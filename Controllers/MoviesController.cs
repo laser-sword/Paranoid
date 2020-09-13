@@ -67,15 +67,15 @@ namespace Paranoid.Controllers
             return View(viewModel);
         }
 
-        public ActionResult New()
+        public ViewResult New()
         {
-            var movie = new Movie();
+    
             var genre = _context.Genres.ToList();
 
             var viewModel = new MovieFormViewModel
             {
-                Movie = movie,
-                Genre = _context.Genres.ToList()
+
+                Genre = genre
             };
 
             return View("MovieForm", viewModel);
@@ -85,28 +85,41 @@ namespace Paranoid.Controllers
         //}
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(Movie movie)
         {
 
-            if (movie.Id == 0)
-                _context.Movie.Add(movie);
+            if (!ModelState.IsValid)
+            {
 
+                var viewModel = new MovieFormViewModel(movie)
+                {
+                    Genre = _context.Genres.ToList()
+                };
+                return View("MovieForm", viewModel);
+            }
+            if (movie.Id == 0)
+            {
+                movie.DateAdded = DateTime.Now;
+                _context.Movie.Add(movie);
+            }
             else
+            
             {
                 var movieInDb = _context.Movie.Single(c => c.Id == movie.Id);
                 movieInDb.Name = movie.Name;
-                movieInDb.GenreId= movie.GenreId;
+                movieInDb.GenreId = movie.GenreId;
                 movieInDb.ReleaseDate = movie.ReleaseDate;
-                movieInDb.DateAdded = movie.DateAdded;
+                //movieInDb.DateAdded = movie.DateAdded;
                 movieInDb.Stock = movie.Stock;
             }
 
 
-            _context.SaveChanges();
+                _context.SaveChanges();
 
-            return RedirectToAction("Index", "Movies");
+                return RedirectToAction("Index", "Movies");
+            
         }
-
         public ActionResult Edit(int id)
         {
             var movie = _context.Movie.SingleOrDefault(c => c.Id == id);
@@ -114,14 +127,12 @@ namespace Paranoid.Controllers
             if (movie == null)
                 return HttpNotFound();
 
-            var viewModel = new MovieFormViewModel
+            var viewModel = new MovieFormViewModel(movie)
             {
-                Movie = movie,
                 Genre = _context.Genres.ToList()
             };
 
             return View("MovieForm", viewModel);
-
         }
 
 
